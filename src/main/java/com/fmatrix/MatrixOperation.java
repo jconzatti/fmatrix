@@ -1,10 +1,13 @@
 package com.fmatrix;
 
-
 public class MatrixOperation {
     
+    public static double determinante(double[][] A){
+        return 0;
+    }
+    
     public static double[][] transposta(double[][] A){
-        double[][] B = A.clone();
+        double[][] B = new double[A[0].length][A.length];
         for(int i = 0; i < A.length; i++)
             for(int j = 0; j < A[i].length; j++)
                 B[i][j] = A[j][i];
@@ -78,7 +81,81 @@ public class MatrixOperation {
         return C;
     }
     
+    public static double[] resolverSistemaTriangularInferior(double[][]A, double[]b, MatrixOperationTriangularSystemForm form) throws MatrixOperationException{
+        int k = 0;
+        for(; k < b.length; k++){
+            if(A[k][k] == 0)
+                throw new MatrixOperationException("A matriz não é inversível!");
+            
+            if(b[k] != 0)
+                break;
+        }
+        
+        switch(form){
+            case ROW_ORIENTED:
+                for(int i = k; i < b.length; i++){
+                    if(A[i][i] == 0)
+                        throw new MatrixOperationException("A matriz não é inversível!");
+                    
+                    for(int j = k; j < i; j++)
+                        b[i] = b[i] - (A[i][j] * b[j]);
+                    b[i] = b[i]/A[i][i];
+                }
+                break;
+            case COLUMN_ORIENTED:
+                for(int j = k; j < b.length; j++){
+                    if(A[j][j] == 0)
+                        throw new MatrixOperationException("A matriz não é inversível!");
+                    
+                    b[j] = b[j]/A[j][j];
+                    for(int i = j+1; i < b.length; i++)
+                        b[i] = b[i] - (A[i][j] * b[j]);
+                }
+                break;
+        }
+        return b;
+    }
+    
+    public static double[] resolverSistemaTriangularSuperior(double[][]A, double[]b, MatrixOperationTriangularSystemForm form) throws MatrixOperationException{
+        int k = 0;
+        for(; k < b.length; k++){
+            if(A[k][k] == 0)
+                throw new MatrixOperationException("A matriz não é inversível!");
+            
+            if(b[k] != 0)
+                break;
+        }
+        
+        switch(form){
+            case ROW_ORIENTED:
+                for(int i = b.length - 1; i >= k; i--){
+                    if(A[i][i] == 0)
+                        throw new MatrixOperationException("A matriz não é inversível!");
+                    
+                    for(int j = b.length - 1; j > i; j--)
+                        b[i] = b[i] - (A[i][j] * b[j]);
+                    b[i] = b[i]/A[i][i];
+                }
+                break;
+            case COLUMN_ORIENTED:
+                for(int j = b.length - 1; j >= k; j--){
+                    if(A[j][j] == 0)
+                        throw new MatrixOperationException("A matriz não é inversível!");
+                    
+                    b[j] = b[j]/A[j][j];
+                    for(int i = j-1; i >= 0; i--)
+                        b[i] = b[i] - (A[i][j] * b[j]);
+                }
+                break;
+        }
+        return b;
+    }
+    
     public static double[][] fatorarCholesky(double[][] A){
+        for(int i = 0; i < A.length; i++){
+            for(int k = 0; k < 1; k++)
+                A[i][i] = A[i][i] - (A[k][i]*A[k][i]);
+        }
         return A;
     }
     
