@@ -37,23 +37,24 @@ public class MatrixOperation {
     }
     
     public static double[][] somar(double[][] A, double[][] B) throws MatrixOperationException{
-        if((A.length != B.length)
-                ||(A[0].length != B[0].length))
+        if(A.length != B.length)
             throw new MatrixOperationException("Soma de matrizes impossível! A ordem da matriz A deve ser igual a ordem da matriz B!");
         
-        double[][] C = new double[A.length][A[0].length];
+        double[][] C = new double[A.length][];
         for(int i = 0; i < C.length; i++){
+            if(A[i].length != B[i].length)
+                throw new MatrixOperationException("Soma de matrizes impossível! A ordem da matriz A deve ser igual a ordem da matriz B!");
+            C[i] = new double[A[i].length];
             for(int j = 0; j < C[i].length; j++)
                     C[i][j] = A[i][j] + B[i][j];
         }
         return C;
     }
     
-    public static double[][] multiplicar(double a, double[][] A){
+    public static void multiplicar(double a, double[][] A){
         for(int i = 0; i < A.length; i++)
             for(int j = 0; j < A[i].length; j++)
                 A[i][j] = a*A[i][j];
-        return A;
     }
     
     public static double[] multiplicar(double[][] A, double[] B) throws MatrixOperationException{
@@ -81,7 +82,7 @@ public class MatrixOperation {
         return C;
     }
     
-    public static double[] resolverSistemaTriangularInferior(double[][]A, double[]b, MatrixOperationTriangularSystemForm form) throws MatrixOperationException{
+    public static void resolverSistemaTriangularInferior(double[][]A, double[]b, MatrixOperationTriangularSystemForm form) throws MatrixOperationException{
         int k = 0;
         for(; k < b.length; k++){
             if(A[k][k] == 0)
@@ -113,10 +114,9 @@ public class MatrixOperation {
                 }
                 break;
         }
-        return b;
     }
     
-    public static double[] resolverSistemaTriangularSuperior(double[][]A, double[]b, MatrixOperationTriangularSystemForm form) throws MatrixOperationException{
+    public static void resolverSistemaTriangularSuperior(double[][]A, double[]b, MatrixOperationTriangularSystemForm form) throws MatrixOperationException{
         int k = 0;
         for(; k < b.length; k++){
             if(A[k][k] == 0)
@@ -148,23 +148,75 @@ public class MatrixOperation {
                 }
                 break;
         }
-        return b;
     }
     
-    public static double[][] fatorarCholesky(double[][] A){
-        for(int i = 0; i < A.length; i++){
-            for(int k = 0; k < 1; k++)
-                A[i][i] = A[i][i] - (A[k][i]*A[k][i]);
+    public static void fatorarCholesky(double[][] A, MatrixOperationCholeskyForm form) throws MatrixOperationException{
+        switch(form){
+            case INNER_PRODUCT:
+                for(int i = 0; i < A.length; i++){
+                    for(int k = 0; k < i; k++)
+                        A[i][i] = A[i][i] - (A[k][i]*A[k][i]);
+                    if(A[i][i] <= 0)
+                        throw new MatrixOperationException("A matriz não é definida positiva!");
+                    A[i][i] = Math.sqrt(A[i][i]);
+                    for(int j = i+1; j < A.length; j++){
+                        for(int k = 0; k < i; k++)
+                            A[i][j] = A[i][j] - (A[k][i]*A[k][j]);
+                        A[i][j] = A[i][j]/A[i][i];
+                    }
+                }
+                break;
+            case OUTER_PRODUCT:
+                for(int i = 0; i < A.length; i++){
+                    if(A[i][i] <= 0)
+                        throw new MatrixOperationException("A matriz não é definida positiva!");
+                    A[i][i] = Math.sqrt(A[i][i]);
+                    for(int j = i+1; j < A.length; j++)
+                        A[i][j] = A[i][j]/A[i][i];
+                    for(int j = i+1; j < A.length; j++)
+                        for(int k = j; k < A.length; k++)
+                            A[j][k] = A[j][k] - (A[i][j]*A[i][k]);
+                }
+                break;
+            case BORDERED:
+                break;
         }
-        return A;
     }
     
-    public static double[][] fatorarGaussLU(double[][] A){
-        return A;
+    public static void resolverSistemaGaussLU(double[][] A, double[] b) throws MatrixOperationException{
+        for(int i = 0; i < A.length; i++){
+            if(A[i][i]==0)
+                throw new MatrixOperationException("O sistema Ax = b impossível de ser resolvido sem pivô!");
+            for(int j = i+1; j < A.length; j++){
+                A[j][i] = A[j][i]/A[i][i];
+                b[j] = b[j] - (A[j][i]*b[i]);
+                for(int k = i+1; k < A.length; k++)
+                    A[j][k] = A[j][k] - (A[j][i]*A[i][k]);
+            }
+        }
+        resolverSistemaTriangularSuperior(A, b, MatrixOperationTriangularSystemForm.ROW_ORIENTED);
     }
     
-    public static double[][] fatorarGaussPivo(double[][] A){
-        return A;
+    public static void fatorarGaussLU(double[][] A) throws MatrixOperationException{for(int i = 0; i < A.length; i++){
+            if(A[i][i]==0)
+                throw new MatrixOperationException("O sistema Ax = b impossível de ser resolvido sem pivô!");
+            for(int j = i+1; j < A.length; j++){
+                A[j][i] = A[j][i]/A[i][i];
+                for(int k = i+1; k < A.length; k++)
+                    A[j][k] = A[j][k] - (A[j][i]*A[i][k]);
+            }
+        }
+    }
+    
+    //Ly = b
+    public static void obterGaussLy(double[][] A, double[]b) throws MatrixOperationException{
+        for(int i = 0; i < A.length; i++){
+            for(int j = i+1; j < A.length; j++)
+                b[j] = b[j] - (A[j][i]*b[i]);
+        }
+    }
+    
+    public static void fatorarGaussPivo(double[][] A){
     }
     
 }
