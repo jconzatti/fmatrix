@@ -57,15 +57,15 @@ public class MatrixOperation {
                 A[i][j] = a*A[i][j];
     }
     
-    public static double[] multiplicar(double[][] A, double[] B) throws MatrixOperationException{
-        if(A[0].length != B.length)
+    public static double[] multiplicar(double[][] A, double[] b) throws MatrixOperationException{
+        if(A[0].length != b.length)
             throw new MatrixOperationException("Multiplicação de matriz por vetor impossível! O número de colunas da matriz A deve ser igual ao número de elementos do vetor B!");
         
-        double[] C = new double[B.length];
+        double[] c = new double[b.length];
         for(int i = 0; i < A.length; i++)
-            for(int j = 0; j < B.length; j++)
-                C[i] = C[i] + (A[i][j] * B[j]);
-        return C;
+            for(int j = 0; j < b.length; j++)
+                c[i] = c[i] + (A[i][j] * b[j]);
+        return c;
     }
     
     public static double[][] multiplicar(double[][] A, double[][] B) throws MatrixOperationException{
@@ -183,7 +183,7 @@ public class MatrixOperation {
         }
     }
     
-    public static void resolverSistemaGaussLU(double[][] A, double[] b) throws MatrixOperationException{
+    /*public static void resolverSistemaGaussLU(double[][] A, double[] b) throws MatrixOperationException{
         for(int i = 0; i < A.length; i++){
             if(A[i][i]==0)
                 throw new MatrixOperationException("O sistema Ax = b impossível de ser resolvido sem pivô!");
@@ -195,7 +195,7 @@ public class MatrixOperation {
             }
         }
         resolverSistemaTriangularSuperior(A, b, MatrixOperationTriangularSystemForm.ROW_ORIENTED);
-    }
+    }*/
     
     public static void fatorarGaussLU(double[][] A, MatrixOperationGaussLUForm form) throws MatrixOperationException{
         switch(form){
@@ -236,23 +236,47 @@ public class MatrixOperation {
     }
     
     //retorna um vetor com a ordem das permutações das linhas de A 
-    public static int[] fatorarGaussPivo(double[][] A){
+    public static int[] fatorarGaussPivo(double[][] A) throws MatrixOperationException{
         int[] p = new int[A.length];
         for(int o = 0; o < A.length; o++)
             p[o] = o;
         
         for(int i = 0; i < A.length; i++){
-            int iMax = 0;
-            double dMax = 0;
-            for(int k = i; k < A.length; k++){
+            int iMax = i;
+            double dMax = Math.abs(A[i][i]);
+            for(int k = i+1; k < A.length; k++){
                 if(Math.abs(A[k][i]) > dMax){
                     iMax = k;
                     dMax = Math.abs(A[k][i]);
                 }
             }
+            if(iMax > i){
+                double[] linhaA = A[i].clone();
+                A[i] = A[iMax].clone();
+                A[iMax] = linhaA;
+                p[i] = iMax;
+                p[iMax] = i;
+            }
+            if(A[i][i]==0)
+                throw new MatrixOperationException("O sistema Ax = b impossível de ser resolvido!");
+            for(int j = i+1; j < A.length; j++){
+                A[j][i] = A[j][i]/A[i][i];
+                for(int k = i+1; k < A.length; k++)
+                    A[j][k] = A[j][k] - (A[j][i]*A[i][k]);
+            }
         }
         
         return p;
+    }
+    
+    public static void reordenarGaussb(int[] p, double[] b) throws MatrixOperationException{
+        if(b.length != p.length)
+            throw new MatrixOperationException("Impossível reordenar b com a permutação p! b e p não têm as mesmas dimensões!");
+        
+        double[] bOriginal = b.clone();
+        for(int i = 0; i < b.length; i++)
+            if(i != p[i])
+                b[i] = bOriginal[p[i]];
     }
     
 }
