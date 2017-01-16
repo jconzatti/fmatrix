@@ -197,26 +197,62 @@ public class MatrixOperation {
         resolverSistemaTriangularSuperior(A, b, MatrixOperationTriangularSystemForm.ROW_ORIENTED);
     }
     
-    public static void fatorarGaussLU(double[][] A) throws MatrixOperationException{for(int i = 0; i < A.length; i++){
-            if(A[i][i]==0)
-                throw new MatrixOperationException("O sistema Ax = b impossível de ser resolvido sem pivô!");
-            for(int j = i+1; j < A.length; j++){
-                A[j][i] = A[j][i]/A[i][i];
-                for(int k = i+1; k < A.length; k++)
-                    A[j][k] = A[j][k] - (A[j][i]*A[i][k]);
-            }
+    public static void fatorarGaussLU(double[][] A, MatrixOperationGaussLUForm form) throws MatrixOperationException{
+        switch(form){
+            case ROW_ORIENTED:
+                for(int i = 0; i < A.length; i++){
+                    if(A[i][i]==0)
+                        throw new MatrixOperationException("O sistema Ax = b impossível de ser resolvido sem pivô!");
+                    for(int j = i+1; j < A.length; j++){
+                        A[j][i] = A[j][i]/A[i][i];
+                        for(int k = i+1; k < A.length; k++)
+                            A[j][k] = A[j][k] - (A[j][i]*A[i][k]);
+                    }
+                }
+                break;
+            case COLUMN_ORIENTED:
+                for(int k = 0; k < A.length; k++){
+                    for(int j = k; j < A.length; j++)
+                        for(int m = 0; m < k; m++)
+                            A[k][j] = A[k][j] - (A[k][m]*A[m][j]);
+                    if(A[k][k]==0)
+                        throw new MatrixOperationException("O sistema Ax = b impossível de ser resolvido sem pivô!");
+                    for(int i = k+1; i < A.length; i++){
+                        for(int m = 0; m < k; m++)
+                            A[i][k] = A[i][k] - (A[i][m]*A[m][k]);
+                        A[i][k] = A[i][k]/A[k][k];
+                    }
+                }
+                break;
         }
     }
     
     //Ly = b
-    public static void obterGaussLy(double[][] A, double[]b) throws MatrixOperationException{
-        for(int i = 0; i < A.length; i++){
-            for(int j = i+1; j < A.length; j++)
-                b[j] = b[j] - (A[j][i]*b[i]);
+    public static void obterGaussLy(double[][] L, double[]b) throws MatrixOperationException{
+        for(int i = 0; i < L.length; i++){
+            for(int j = i+1; j < L.length; j++)
+                b[j] = b[j] - (L[j][i]*b[i]);
         }
     }
     
-    public static void fatorarGaussPivo(double[][] A){
+    //retorna um vetor com a ordem das permutações das linhas de A 
+    public static int[] fatorarGaussPivo(double[][] A){
+        int[] p = new int[A.length];
+        for(int o = 0; o < A.length; o++)
+            p[o] = o;
+        
+        for(int i = 0; i < A.length; i++){
+            int iMax = 0;
+            double dMax = 0;
+            for(int k = i; k < A.length; k++){
+                if(Math.abs(A[k][i]) > dMax){
+                    iMax = k;
+                    dMax = Math.abs(A[k][i]);
+                }
+            }
+        }
+        
+        return p;
     }
     
 }

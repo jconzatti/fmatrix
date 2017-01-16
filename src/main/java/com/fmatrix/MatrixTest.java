@@ -59,14 +59,12 @@ public class MatrixTest {
         
     }
     
-    private static void resolverSistemaGaussSemPivoTest() throws MatrixOperationException{
+    private static void fatorarGaussLUTest() throws MatrixOperationException{
         double[][] A = {
-            {2,1,-1,3}, 
-            {-2,0,0,0}, 
-            {4,1,-2,6},
-            {-6,-1,2,-3}
+            {2,1,1}, 
+            {2,2,-1}, 
+            {4,-1,6}
         };
-        double[] b = {13,-2,24,-14};
         
         System.out.println("Resolvendo sistema com eliminação Gaussiana sem pivô:");
         System.out.println("Seja A = ");
@@ -77,14 +75,10 @@ public class MatrixTest {
             }
             System.out.println("|");
         }
-        System.out.print("Seja b = [");
-        for(int i = 0; i < b.length; i++)
-            System.out.print(b[i] + "  ");
-        System.out.println("]");
         
-        MatrixOperation.resolverSistemaGaussLU(A, b);
+        MatrixOperation.fatorarGaussLU(A, MatrixOperationGaussLUForm.COLUMN_ORIENTED);
         
-        System.out.println("Então Â = ");
+        System.out.println("Então LU = ");
         for(int i = 0; i < A.length; i++){
             System.out.print("| ");
             for(int j = 0; j < A[i].length; j++){
@@ -93,15 +87,55 @@ public class MatrixTest {
             System.out.println("|");
         }
         
-        System.out.println("Ax = b:");
+        double[] b = {9,9,16};
+        
+        System.out.print("Seja b = [");
+        for(int i = 0; i < b.length; i++)
+            System.out.print(b[i] + "  ");
+        System.out.println("]");
+        
+        MatrixOperation.obterGaussLy(A, b);
+        
+        System.out.println("Ly = b:");
+        System.out.print("y = [ ");
+        for(int i = 0; i < b.length; i++)
+            System.out.print(b[i] + "  ");
+        System.out.println("]");
+        
+        MatrixOperation.resolverSistemaTriangularSuperior(A, b, MatrixOperationTriangularSystemForm.ROW_ORIENTED);
+        
+        System.out.println("Ux = y:");
         System.out.print("x = [ ");
         for(int i = 0; i < b.length; i++)
             System.out.print(b[i] + "  ");
         System.out.println("]");
         
+        double[] c = {3,0,11};
+        
+        System.out.print("Seja c = [");
+        for(int i = 0; i < c.length; i++)
+            System.out.print(c[i] + "  ");
+        System.out.println("]");
+        
+        MatrixOperation.obterGaussLy(A, c);
+        
+        System.out.println("Ly = c:");
+        System.out.print("y = [ ");
+        for(int i = 0; i < c.length; i++)
+            System.out.print(c[i] + "  ");
+        System.out.println("]");
+        
+        MatrixOperation.resolverSistemaTriangularSuperior(A, c, MatrixOperationTriangularSystemForm.ROW_ORIENTED);
+        
+        System.out.println("Ux = y:");
+        System.out.print("x = [ ");
+        for(int i = 0; i < c.length; i++)
+            System.out.print(c[i] + "  ");
+        System.out.println("]");
+        
     }
     
     public static void main(String[] args) throws MatrixOperationException {
-        resolverSistemaGaussSemPivoTest();
+        fatorarGaussLUTest();
     }
 }
