@@ -238,24 +238,19 @@ public class MatrixOperation {
     //retorna um vetor com a ordem das permutações das linhas de A 
     public static int[] fatorarGaussPivo(double[][] A) throws MatrixOperationException{
         int[] p = new int[A.length];
-        for(int o = 0; o < A.length; o++)
-            p[o] = o;
-        
         for(int i = 0; i < A.length; i++){
-            int iMax = i;
+            p[i] = i;
             double dMax = Math.abs(A[i][i]);
             for(int k = i+1; k < A.length; k++){
                 if(Math.abs(A[k][i]) > dMax){
-                    iMax = k;
+                    p[i] = k;
                     dMax = Math.abs(A[k][i]);
                 }
             }
-            if(iMax > i){
+            if(p[i] > i){
                 double[] linhaA = A[i].clone();
-                A[i] = A[iMax].clone();
-                A[iMax] = linhaA;
-                p[i] = iMax;
-                p[iMax] = i;
+                A[i] = A[p[i]].clone();
+                A[p[i]] = linhaA;
             }
             if(A[i][i]==0)
                 throw new MatrixOperationException("O sistema Ax = b impossível de ser resolvido!");
@@ -273,10 +268,13 @@ public class MatrixOperation {
         if(b.length != p.length)
             throw new MatrixOperationException("Impossível reordenar b com a permutação p! b e p não têm as mesmas dimensões!");
         
-        double[] bOriginal = b.clone();
-        for(int i = 0; i < b.length; i++)
-            if(i != p[i])
-                b[i] = bOriginal[p[i]];
+        for(int i = 0; i < b.length; i++){
+            if(i != p[i]){
+                double d = b[i];
+                b[i] = b[p[i]];
+                b[p[i]] = d;
+            }
+        }
     }
     
 }

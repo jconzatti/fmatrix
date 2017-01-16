@@ -137,9 +137,11 @@ public class MatrixTest {
     
     private static void fatorarGaussPivoTest() throws MatrixOperationException{
         double[][] A = {
-            {2,1,1}, 
-            {2,2,-1}, 
-            {4,-1,6}
+            {2,10,8,8,6}, 
+            {1,4,-2,4,-1}, 
+            {0,2,3,2,1},
+            {3,8,3,10,9},
+            {1,4,1,2,1}
         };
         
         System.out.println("Resolvendo sistema com eliminação Gaussiana com pivô:");
@@ -168,7 +170,7 @@ public class MatrixTest {
             System.out.print(p[i] + "  ");
         System.out.println("]");
         
-        double[] b = {9,9,16};
+        double[] b = {52,14,12,51,15};
         
         System.out.print("Seja b = [");
         for(int i = 0; i < b.length; i++)
@@ -198,7 +200,7 @@ public class MatrixTest {
             System.out.print(b[i] + "  ");
         System.out.println("]");
         
-        double[] c = {3,0,11};
+        double[] c = {50,4,12,48,12};
         
         System.out.print("Seja c = [");
         for(int i = 0; i < c.length; i++)
