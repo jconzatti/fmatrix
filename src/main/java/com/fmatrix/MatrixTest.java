@@ -76,7 +76,7 @@ public class MatrixTest {
             System.out.println("|");
         }
         
-        MatrixOperation.fatorarGaussLU(A, MatrixOperationGaussLUForm.COLUMN_ORIENTED);
+        MatrixOperation.fatorarGaussLU(A, MatrixOperationGaussLUForm.ROW_ORIENTED);
         
         System.out.println("Então LU = ");
         for(int i = 0; i < A.length; i++){
@@ -233,14 +233,30 @@ public class MatrixTest {
     }
     
     public static void main(String[] args) throws MatrixOperationException {
-        fatorarCholeskyTest();
-        System.out.println("----------------------------------------------------");
-        System.out.println();
+        //fatorarCholeskyTest();
+        //System.out.println("----------------------------------------------------");
+        //System.out.println();
         fatorarGaussLUTest();
         System.out.println("----------------------------------------------------");
         System.out.println();
-        fatorarGaussPivoTest();
-        System.out.println("----------------------------------------------------");
-        System.out.println();
+        //fatorarGaussPivoTest();
+        //System.out.println("----------------------------------------------------");
+        //System.out.println();
+        
+        /*for(int n = 1; n < 100; n++){
+            int q = 0;
+            for(int i = 0; i < n; i++){
+                for(int k = 0; k < i; k++)
+                    q += 2;
+                q += 1;
+                for(int j = i+1; j < n; j++){
+                    for(int k = 0; k < i; k++)
+                        q += 2;
+                    q += 1;
+                }
+            }
+            //System.out.println(n + " = " + q + " aprox. " + (((3*n*n)-n)/2));
+            System.out.println(n + " = " + q + " aprox. " + (((2*n*n*n) + (3*n*n) + n)/6));
+        }*/
     }
 }

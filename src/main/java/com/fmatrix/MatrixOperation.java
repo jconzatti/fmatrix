@@ -200,13 +200,13 @@ public class MatrixOperation {
     public static void fatorarGaussLU(double[][] A, MatrixOperationGaussLUForm form) throws MatrixOperationException{
         switch(form){
             case ROW_ORIENTED:
-                for(int i = 0; i < A.length; i++){
-                    if(A[i][i]==0)
+                for(int k = 0; k < A.length; k++){
+                    if(A[k][k]==0)
                         throw new MatrixOperationException("O sistema Ax = b impossível de ser resolvido sem pivô!");
-                    for(int j = i+1; j < A.length; j++){
-                        A[j][i] = A[j][i]/A[i][i];
-                        for(int k = i+1; k < A.length; k++)
-                            A[j][k] = A[j][k] - (A[j][i]*A[i][k]);
+                    for(int i = k+1; i < A.length; i++){
+                        A[i][k] = A[i][k]/A[k][k];
+                        for(int j = k+1; j < A.length; j++)
+                            A[i][j] = A[i][j] - (A[i][k]*A[k][j]);
                     }
                 }
                 break;
