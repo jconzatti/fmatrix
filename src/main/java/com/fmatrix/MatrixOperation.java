@@ -228,10 +228,10 @@ public class MatrixOperation {
     }
     
     //Ly = b
-    public static void obterGaussLy(double[][] L, double[]b) throws MatrixOperationException{
+    public static void obterGaussLy(double[][] L, double[]b){
         for(int i = 0; i < L.length; i++){
-            for(int j = i+1; j < L.length; j++)
-                b[j] = b[j] - (L[j][i]*b[i]);
+            for(int j = 0; j < i; j++)
+                b[i] = b[i] - (L[i][j]*b[j]);
         }
     }
     
